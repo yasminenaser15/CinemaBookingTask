@@ -1,0 +1,58 @@
+﻿@using CinemaBookingTask.ViewModels;
+@model UpdateActorVM
+
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">Update Actor</h2>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input class="form-control" placeholder="Name" asp-for="Name">
+                    <span class="text-danger" asp-validation-for="Name"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Update Image (optional)</label>
+                    <input type="file" class="form-control" asp-for="Img"
+                           accept="image/*" onchange="previewImage(event)">
+                    <small class="text-muted">Leave empty to keep current image</small>
+                </div>
+
+                <div class="mb-3">
+                    <img id="preview"
+                         src="~/images/actors/@Model.CurrentImg"
+                         alt="Current Image"
+                         style="max-width:200px; border:1px solid #ccc;
+                    padding:5px; border-radius:10px;" />
+                </div>
+
+                <button type="submit" class="btn btn-warning">Update</button>
+                <a href="/Actor/Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById("preview");
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => preview.src = e.target.result;
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

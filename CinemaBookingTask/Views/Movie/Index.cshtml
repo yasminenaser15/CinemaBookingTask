@@ -1,0 +1,155 @@
+﻿@using CinemaBookingTask.ViewModels;
+@model MovieWithRelatedVM
+
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">All Movies</h2>
+        </div>
+        <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
+            <a href="/Movie/Create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Create
+            </a>
+        </div>
+    </div>
+
+    <section class="py-3 filter-bar">
+        <form>
+            <div class="row my-2">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" placeholder="Name"
+                           name="query" value="@Model.Query">
+                </div>
+                <div class="col-md-3">
+                    <select name="categoryId" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach (var item in Model.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="cinemaId" class="form-select">
+                        <option value="">All Cinemas</option>
+                        @foreach (var item in Model.Cinemas)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-dark w-100">Filter</button>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Category</th>
+                        <th>Cinema</th>
+                        <th>DateTime</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Movies)
+                    {
+                        <tr>
+                            <th>@item.Id</th>
+                            <td>
+                                @if (item.MainImg is not null)
+                                {
+                                    <img src="~/images/movies/@item.MainImg"
+                                         style="width:60px; height:60px; object-fit:cover; border-radius:8px;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Image</span>
+                                }
+
+                                @foreach (var sub in item.MovieSubImgs)
+                                {
+                                    <img src="~/images/movies/movie_sub_imgs/@sub.SubImg"
+                                         style="width:60px; height:60px; object-fit:cover; border-radius:8px; margin-left:4px;" />
+                                }
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Price.ToString("c")</td>
+                            <td><span class="badge text-bg-info">@item.Status</span></td>
+                            <td><span class="badge text-bg-success">@item.Category.Name</span></td>
+                            <td><span class="badge text-bg-primary">@item.Cinema.Name</span></td>
+                            <td>@item.DateTime.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <a href="/Movie/Update/@item.Id" class="btn btn-warning">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a href="/Movie/Delete/@item.Id" class="btn btn-danger btn-delete">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <ul class="pagination">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a href="/Movie/Index?page=@(Model.CurrentPage - 1)" class="page-link">Previous</a>
+                    </li>
+                }
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                        <a class="page-link" href="/Movie/Index?page=@i">@i</a>
+                    </li>
+                }
+                @if (Model.CurrentPage != Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/Movie/Index?page=@(Model.CurrentPage + 1)">Next</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btn-delete").forEach(button => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const url = this.getAttribute("href");
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This action cannot be undone!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+</script>

@@ -1,0 +1,135 @@
+﻿@using CinemaBookingTask.ViewModels;
+
+@model CinemaWithRelatedVM
+
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">All Cinemas</h2>
+        </div>
+        <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
+            <a href="/Cinema/Create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Create
+            </a>
+        </div>
+    </div>
+
+    <section class="py-3 filter-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" placeholder="Name"
+                                       name="query" value="@Model.Query">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-dark w-100">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Cinemas)
+                    {
+                        <tr>
+                            <th>@item.Id</th>
+                            <td>
+                                @if (item.Img is not null)
+                                {
+                                    <img src="~/images/cinemas/@item.Img"
+                                         style="width:60px; height:60px; object-fit:cover; border-radius:8px;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Image</span>
+                                }
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <a href="/Cinema/Update/@item.Id" class="btn btn-warning">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a href="/Cinema/Delete/@item.Id" class="btn btn-danger btn-delete">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <nav>
+                <ul class="pagination">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a href="/Cinema/Index?page=@(Model.CurrentPage - 1)" class="page-link">Previous</a>
+                        </li>
+                    }
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(Model.CurrentPage == i ? "active" :
+"")">
+                            <a class="page-link" href="/Cinema/Index?page=@i">@i</a>
+                        </li>
+                    }
+                    @if (Model.CurrentPage != Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="/Cinema/Index?page=@(Model.CurrentPage + 1)">Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".btn-delete");
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                const url = this.getAttribute("href");
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This action cannot be undone!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({ title: "Deleted!", icon: "success" }, 3000);
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+</script>
