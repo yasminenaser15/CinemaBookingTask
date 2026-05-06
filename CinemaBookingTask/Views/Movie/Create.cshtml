@@ -1,4 +1,5 @@
-﻿@using CinemaBookingTask.ViewModels;
+﻿
+@using CinemaBookingTask.ViewModels;
 @model UpsertMovieVM
 
 <div class="container">
@@ -11,22 +12,40 @@
     <div class="row my-3">
         <div class="col-12">
             <form method="post" enctype="multipart/form-data">
+
                 <div class="mb-3">
                     <label class="form-label">Name</label>
-                    <input class="form-control" placeholder="Name" name="Name" value="@Model.Movie.Name">
+                    <input class="form-control" placeholder="Name" 
+                           name="Name" value="@Model.Movie.Name" />
+                    @if (!ViewData.ModelState.IsValid && 
+                         ViewData.ModelState["Name"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">
+                            @ViewData.ModelState["Name"]!.Errors[0].ErrorMessage
+                        </span>
+                    }
                 </div>
 
                 <div class="mb-3">
                     <div class="form-floating">
                         <textarea class="form-control" style="height:100px"
-                                  placeholder="Description" name="Description">@Model.Movie.Description</textarea>
+                                  placeholder="Description" 
+                                  name="Description">@Model.Movie.Description</textarea>
                         <label>Description</label>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Price</label>
-                    <input class="form-control" placeholder="Price" name="Price" value="@Model.Movie.Price">
+                    <input class="form-control" placeholder="Price" 
+                           name="Price" value="@Model.Movie.Price" />
+                    @if (!ViewData.ModelState.IsValid && 
+                         ViewData.ModelState["Price"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">
+                            @ViewData.ModelState["Price"]!.Errors[0].ErrorMessage
+                        </span>
+                    }
                 </div>
 
                 <div class="mb-3">
@@ -40,7 +59,14 @@
 
                 <div class="mb-3">
                     <label class="form-label">DateTime</label>
-                    <input type="datetime-local" class="form-control" name="DateTime">
+                    <input type="datetime-local" class="form-control" name="DateTime" />
+                    @if (!ViewData.ModelState.IsValid && 
+                         ViewData.ModelState["DateTime"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">
+                            @ViewData.ModelState["DateTime"]!.Errors[0].ErrorMessage
+                        </span>
+                    }
                 </div>
 
                 <div class="mb-3">
@@ -83,7 +109,7 @@
                 <div class="mb-3">
                     <img id="preview" src="#" alt="Preview"
                          style="max-width:200px; display:none; border:1px solid #ccc;
-                    padding:5px; border-radius:10px;" />
+                                padding:5px; border-radius:10px;" />
                 </div>
 
                 <div class="mb-3">
