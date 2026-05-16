@@ -1,0 +1,145 @@
+﻿
+@using CinemaBookingTask.ViewModels;
+@model UpsertMovieVM
+
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">Create new Movie</h2>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input class="form-control" placeholder="Name" 
+                           name="Name" value="@Model.Movie.Name" />
+                    @if (!ViewData.ModelState.IsValid && 
+                         ViewData.ModelState["Name"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">
+                            @ViewData.ModelState["Name"]!.Errors[0].ErrorMessage
+                        </span>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-floating">
+                        <textarea class="form-control" style="height:100px"
+                                  placeholder="Description" 
+                                  name="Description">@Model.Movie.Description</textarea>
+                        <label>Description</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input class="form-control" placeholder="Price" 
+                           name="Price" value="@Model.Movie.Price" />
+                    @if (!ViewData.ModelState.IsValid && 
+                         ViewData.ModelState["Price"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">
+                            @ViewData.ModelState["Price"]!.Errors[0].ErrorMessage
+                        </span>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="Status" class="form-select">
+                        <option value="Available">Available</option>
+                        <option value="Coming Soon">Coming Soon</option>
+                        <option value="Ended">Ended</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">DateTime</label>
+                    <input type="datetime-local" class="form-control" name="DateTime" />
+                    @if (!ViewData.ModelState.IsValid && 
+                         ViewData.ModelState["DateTime"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">
+                            @ViewData.ModelState["DateTime"]!.Errors[0].ErrorMessage
+                        </span>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select name="CategoryId" class="form-select">
+                        @foreach (var item in Model.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Cinema</label>
+                    <select name="CinemaId" class="form-select">
+                        @foreach (var item in Model.Cinemas)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Actors</label>
+                    <select name="actorIds" class="form-select" multiple>
+                        @foreach (var item in Model.Actors)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                    <small class="text-muted">Hold Ctrl to select multiple actors</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Main Image</label>
+                    <input type="file" class="form-control" name="mainImg"
+                           accept="image/*" onchange="previewImage(event)">
+                </div>
+
+                <div class="mb-3">
+                    <img id="preview" src="#" alt="Preview"
+                         style="max-width:200px; display:none; border:1px solid #ccc;
+                                padding:5px; border-radius:10px;" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Sub Images</label>
+                    <input type="file" class="form-control" name="subImgs"
+                           accept="image/*" multiple>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/Admin/Movie/Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById("preview");
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
